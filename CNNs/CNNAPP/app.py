@@ -29,7 +29,6 @@ def leaderboard():
 
 @app.route("/submit", methods=["POST"])
 def submit():
-    """Receive predictions and compute accuracy"""
     data = request.get_json()
 
     if "name" not in data or "predictions" not in data:
@@ -44,14 +43,21 @@ def submit():
     predictions = torch.tensor(predictions)
     accuracy = (predictions.numpy() == test_labels).mean() * 100
 
-    # Save results
+    # Read current results
     df = pd.read_csv("results.csv")
+
+    # 1. Drop old rows for this name
+    df = df[df["name"] != name]
+
+    # 2. Append the new submission
     new_entry = pd.DataFrame([{"name": name, "accuracy": accuracy}])
     df = pd.concat([df, new_entry], ignore_index=True)
 
+    # 3. Write back to CSV
     df.to_csv("results.csv", index=False)
 
     return jsonify({"message": f"Submission received. Accuracy: {accuracy:.2f}%"}), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
