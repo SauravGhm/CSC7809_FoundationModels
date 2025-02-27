@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class BasicBlock(nn.Module):
     """
     A simplified version of the BasicBlock used in ResNet-18/34, as introduced in:
