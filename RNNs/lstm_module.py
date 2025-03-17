@@ -25,7 +25,7 @@ class LSTM(nn.Module):
 
         # Connects the input to the output gate's output
         self.Wxo = nn.Linear(input_size, hidden_size)
-        # Connectes the previous hidden state to the output gate's output
+        # Connects the previous hidden state to the output gate's output
         self.Who = nn.Linear(hidden_size, hidden_size, bias=False)
 
         # Simple linear layer that computes the LSTM module's final output (only used in the final LSTM module)

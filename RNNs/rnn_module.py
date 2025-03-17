@@ -7,9 +7,9 @@ class RNNModule(nn.Module):
         super(RNNModule, self).__init__()
         self.hidden_size = hidden_size
 
-        # setup the weigghts
+        # setup the weights
         self.Wxh = nn.Linear(input_size, hidden_size)  # Connect the input to the hidden state
-        self.Whh = nn.Linear(hidden_size, hidden_size)  # Connect the hidden state to itself
+        self.Whh = nn.Linear(hidden_size, hidden_size, bias=False)  # Connect the hidden state to itself
         self.Who = nn.Linear(hidden_size, output_size)  # Connect the hidden state to the output
 
         # Activation function
