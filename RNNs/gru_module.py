@@ -9,16 +9,16 @@ class GRUModule(nn.Module):
 
         # setup the weights
         self.Wxr = nn.Linear(input_size, hidden_size)  # Connect the input to the reset gate
-        self.Whr = nn.Linear(input_size, hidden_size, bias=False)  # Connect the prior hidden state to the reset gate
+        self.Whr = nn.Linear(hidden_size, hidden_size, bias=False)  # Connect the prior hidden state to the reset gate
 
         self.Wxz = nn.Linear(input_size, hidden_size)  # Connect the input to the update gate
-        self.Whz = nn.Linear(hidden_size, output_size, bias=False)  # Connect the prior hidden state to the update gate
+        self.Whz = nn.Linear(hidden_size, hidden_size, bias=False)  # Connect the prior hidden state to the update gate
 
         self.Wxh = nn.Linear(input_size, hidden_size)  # Connect the input to the candidate hidden state
         self.Whh = nn.Linear(hidden_size, hidden_size,
                              bias=False)  # Connect the hidden state to the candidate hidden state
 
-        self.Who = nn.Linear(input_size, output_size)  # Connect the hidden state to the output (only used in the final
+        self.Who = nn.Linear(hidden_size, output_size)  # Connect the hidden state to the output (only used in the final
                                                         # GRU in the stack
 
         # Activation functions
@@ -39,10 +39,10 @@ class GRUModule(nn.Module):
         update_gate = self.sigmoid(self.Wxz(x) + self.Whz(hidden))
 
         # compute the candidate hidden state (applying the reset gate)
-        candidate_hidden = self.sigmoid(self.Wxh(x) + self.Whh(reset_gate * hidden))
+        candidate_hidden = self.tanh(self.Wxh(x) + self.Whh(reset_gate * hidden))
 
         # apply the update gate to determine the new hidden state
-        hidden = (1 - update_gate) * hidden + update_gate * candidate_hidden
+        hidden = update_gate * hidden + (1 - update_gate) * candidate_hidden
 
         # compute the GRU module's output
         output = self.Who(hidden)
@@ -55,7 +55,7 @@ class GRUModule(nn.Module):
         :param batch_size: Number of samples in the batch
         :return: Initial hidden state (batch_size, hidden_size)
         """
-        return torch.ones(batch_size, self.hidden_size)
+        return torch.zeros(batch_size, self.hidden_size)
 
 
 # Some arbitrary parameters for the example
