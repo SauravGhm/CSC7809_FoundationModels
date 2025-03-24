@@ -94,3 +94,9 @@ out/
 # Environment variables
 .env
 .env.*
+
+Project2/models/gru_inference.py
+Project2/models/gru_model.py
+Project2/models/train_gru.py
+Project2/models/utils.py
+RNNs/gru_module.py
